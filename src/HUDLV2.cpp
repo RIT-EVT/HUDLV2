@@ -1,3 +1,3 @@
-#include <BOARD_NAME.hpp>
+#include <HUDLV2.hpp>
 
-namespace BOARD_NAME {}
+namespace HUDLV2 {}
