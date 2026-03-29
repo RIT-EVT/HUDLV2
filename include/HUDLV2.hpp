@@ -1,13 +1,13 @@
 #pragma once
 
-namespace BOARD_NAME {
+namespace HUDLV2 {
 
 /**
  * This is an example of a class for a board
  */
-class BOARD_NAME {
+class HUDLV2 {
 public:
 private:
 };
 
-} // namespace BOARD_NAME
+} // namespace HUDLV2
