@@ -4,26 +4,26 @@
  * enters.
  */
 
+#include <HUDLV2.hpp>
 #include <core/io/UART.hpp>
 #include <core/io/pin.hpp>
 #include <core/manager.hpp>
 
+#include <core/utils/log.hpp>
+
+#include "dev/IS42S16400J.hpp"
+
+namespace log = core::log;
 namespace io = core::io;
 
 int main() {
     // Initialize system
     core::platform::init();
 
-    // Setup UART
-    io::UART& uart = io::getUART<io::Pin::UART_TX, io::Pin::UART_RX>(9600);
+    io::UART& uart = io::getUART<io::Pin::UART_TX, io::Pin::UART_RX>(9600, false);
 
-    // String to store user input
-    char buf[100];
+    log::LOGGER.setUART(&uart);
 
-    while (1) {
-        // Read user input
-        uart.printf("Enter message: ");
-        uart.gets(buf, 100);
-        uart.printf("\n\recho: %s\n\r", buf);
-    }
+    static auto ram = IS24S16400J::IS42S16400J();
+    static auto
 }

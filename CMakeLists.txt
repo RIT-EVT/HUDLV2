@@ -63,11 +63,12 @@ project(${BOARD_LIB_NAME}
         LANGUAGES CXX C
         )
 
-add_library(${PROJECT_NAME} STATIC)
+add_library(${PROJECT_NAME} STATIC
+        include/dev/IS42S16400J.hpp
+        src/dev/IS42S16400J.cpp)
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/dev/LED.cpp
         src/HUDLV2.cpp
         )
 
