@@ -14,9 +14,52 @@ namespace IS24S16400J {
                            GPIO_SPEED_FREQ_VERY_HIGH, GPIO_AF12_FMC);
     }
 
-    void IS24S16400J::IS24S16400J() {
-        SDRAM_HandleTypeDef sdram{};
-        FMC_SDRAM_TimingTypeDef timing{};
+    static void Setup_Sequence(const SDRAM_HandleTypeDef& sdram) {
+        FMC_SDRAM_CommandTypeDef Command;
+        __IO uint32_t tmpmrd =0;
+
+        Command.CommandMode            = FMC_SDRAM_CMD_CLK_ENABLE;
+        Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
+        Command.AutoRefreshNumber      = 1;
+        Command.ModeRegisterDefinition = 0;
+
+        HAL_SDRAM_SendCommand(const_cast<SDRAM_HandleTypeDef*>(&sdram), &Command, 0xFFFF);
+
+        HAL_Delay(1);
+
+        Command.CommandMode = FMC_SDRAM_CMD_PALL;
+        Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+        Command.AutoRefreshNumber = 1;
+        Command.ModeRegisterDefinition = 0;
+
+        HAL_SDRAM_SendCommand(const_cast<SDRAM_HandleTypeDef*>(&sdram), &Command, 0xFFFF);
+
+        Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
+        Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+        Command.AutoRefreshNumber = 2;
+        Command.ModeRegisterDefinition = 0;
+
+        HAL_SDRAM_SendCommand(const_cast<SDRAM_HandleTypeDef*>(&sdram), &Command, 0xFFFF);
+
+        HAL_Delay(1);
+
+        tmpmrd = LOAD_MODE_BURST_LENGTH_1 |
+                 LOAD_MODE_BURST_TYPE_SEQUENTIAL |
+                 LOAD_MODE_LATENCY_MODE_2 |
+                 LOAD_MODE_OPERATING_MODE_STANDARD |
+                 LOAD_MODE_WRITE_BURST_MODE_PROGRAMMED;
+
+        Command.CommandMode = FMC_SDRAM_CMD_LOAD_MODE;
+        Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+        Command.AutoRefreshNumber = 1;
+        Command.ModeRegisterDefinition = tmpmrd;
+
+        HAL_SDRAM_SendCommand(const_cast<SDRAM_HandleTypeDef*>(&sdram), &Command, 0xFFFF);
+
+        HAL_SDRAM_ProgramRefreshRate(const_cast<SDRAM_HandleTypeDef*>(&sdram), IS42S16400J::SDRAM_CLK_PER_REFRESH);
+    }
+
+    void IS24S16400J::IS24S16400J(SDRAM_HandleTypeDef& sdram, FMC_SDRAM_TimingTypeDef& timing) {
         // Take 20 for a little cushioning (recommended by reference manual)
         IS42S16400J::SDRAM_CLK_PER_REFRESH = REFRESH_TIME_PER_ROW * HAL_RCC_GetSysClockFreq() - 20;
         IS42S16400J::SDRAM_CLK_PERIOD_PS = 1000000000UL / ( (HAL_RCC_GetSysClockFreq() / 2) / 1000);
@@ -46,6 +89,6 @@ namespace IS24S16400J {
 
         SetGPIOToFMC();
 
-        Setup_Communication();
+        Setup_Sequence(sdram);
     };
 }

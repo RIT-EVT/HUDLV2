@@ -64,7 +64,7 @@ namespace IS24S16400J {
 
     class IS42S16400J {
         public:
-            IS42S16400J();
+            IS42S16400J(SDRAM_HandleTypeDef& sdram, FMC_SDRAM_TimingTypeDef& timing) : sdram(sdram), timing(timing) {};
 
             static uint32_t SDRAM_CLK_PERIOD_PS;
             static uint32_t SDRAM_CLK_PER_REFRESH;
@@ -73,58 +73,8 @@ namespace IS24S16400J {
                 return (ns * 1000) / (SDRAM_CLK_PERIOD_PS + 1);
             }
 
-
         private:
-
-            void Setup_Communication() {
-                FMC_SDRAM_CommandTypeDef Command;
-                __IO uint32_t tmpmrd =0;
-
-                /* Step 1: Configure a clock configuration enable command */
-                Command.CommandMode            = FMC_SDRAM_CMD_CLK_ENABLE;
-                Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
-                Command.AutoRefreshNumber      = 1;
-                Command.ModeRegisterDefinition = 0;
-
-                /* Send the command */
-                HAL_SDRAM_SendCommand(&sdram, &Command, 0xFFFF);
-
-                HAL_Delay(1);
-
-                Command.CommandMode = FMC_SDRAM_CMD_PALL;
-                Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
-                Command.AutoRefreshNumber = 1;
-                Command.ModeRegisterDefinition = 0;
-
-                HAL_SDRAM_SendCommand(&sdram, &Command, 0xFFFF);
-
-                Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
-                Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
-                Command.AutoRefreshNumber = 2;
-                Command.ModeRegisterDefinition = 0;
-
-                HAL_SDRAM_SendCommand(&sdram, &Command, 0xFFFF);
-
-                HAL_Delay(1);
-
-                /* Step 7: Program the external memory mode register */
-                tmpmrd = (uint32_t) LOAD_MODE_BURST_LENGTH_1 |
-                                    LOAD_MODE_BURST_TYPE_SEQUENTIAL |
-                                    LOAD_MODE_LATENCY_MODE_2 |
-                                    LOAD_MODE_OPERATING_MODE_STANDARD |
-                                    LOAD_MODE_WRITE_BURST_MODE_PROGRAMMED;
-
-                Command.CommandMode = FMC_SDRAM_CMD_LOAD_MODE;
-                Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
-                Command.AutoRefreshNumber = 1;
-                Command.ModeRegisterDefinition = tmpmrd;
-
-                /* Send the command */
-                HAL_SDRAM_SendCommand(&sdram, &Command, 0xFFFF);
-
-                HAL_SDRAM_ProgramRefreshRate(&sdram, SDRAM_CLK_PER_REFRESH);
-            }
-
-
+            SDRAM_HandleTypeDef sdram;
+            FMC_SDRAM_TimingTypeDef timing;
     };
 }
