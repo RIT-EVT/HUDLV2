@@ -25,5 +25,6 @@ int main() {
     log::LOGGER.setUART(&uart);
 
     static auto ram = IS24S16400J::IS42S16400J();
-    static auto
+
+
 }
