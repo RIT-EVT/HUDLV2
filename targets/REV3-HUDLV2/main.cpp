@@ -11,7 +11,7 @@
 
 #include <core/utils/log.hpp>
 
-#include "dev/IS42S16400J.hpp"
+#include <dev/IS42S16400J.hpp>
 
 namespace log = core::log;
 namespace io = core::io;
@@ -24,7 +24,9 @@ int main() {
 
     log::LOGGER.setUART(&uart);
 
-    static auto ram = IS24S16400J::IS42S16400J();
+    SDRAM_HandleTypeDef hsdram{};
+    FMC_SDRAM_TimingTypeDef timing{};
+    auto ram = IS24S16400J::IS42S16400J(hsdram, timing);
 
 
 }

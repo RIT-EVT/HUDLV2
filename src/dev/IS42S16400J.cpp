@@ -1,6 +1,10 @@
 #include <dev/IS42S16400J.hpp>
 
 namespace IS24S16400J {
+    static uint32_t ns_to_SDRAM_cycles(uint32_t ns) {
+        return (ns * 1000) / (IS42S16400J::SDRAM_CLK_PERIOD_PS + 1);
+    }
+
     static void SetGPIOToFMC() {
         __HAL_RCC_FMC_CLK_ENABLE();
 
@@ -59,7 +63,7 @@ namespace IS24S16400J {
         HAL_SDRAM_ProgramRefreshRate(const_cast<SDRAM_HandleTypeDef*>(&sdram), IS42S16400J::SDRAM_CLK_PER_REFRESH);
     }
 
-    void IS24S16400J::IS24S16400J(SDRAM_HandleTypeDef& sdram, FMC_SDRAM_TimingTypeDef& timing) {
+    void IS24S16400J(SDRAM_HandleTypeDef& sdram, FMC_SDRAM_TimingTypeDef& timing) {
         // Take 20 for a little cushioning (recommended by reference manual)
         IS42S16400J::SDRAM_CLK_PER_REFRESH = REFRESH_TIME_PER_ROW * HAL_RCC_GetSysClockFreq() - 20;
         IS42S16400J::SDRAM_CLK_PERIOD_PS = 1000000000UL / ( (HAL_RCC_GetSysClockFreq() / 2) / 1000);
@@ -77,12 +81,12 @@ namespace IS24S16400J {
         sdram.Init.ReadBurst = FMC_SDRAM_RBURST_DISABLE;
         sdram.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_2;
 
-        timing.RCDDelay = IS42S16400J::ns_to_SDRAM_cycles(15);
-        timing.RPDelay = IS42S16400J::ns_to_SDRAM_cycles(15);
+        timing.RCDDelay = ns_to_SDRAM_cycles(15);
+        timing.RPDelay = ns_to_SDRAM_cycles(15);
         timing.WriteRecoveryTime = 2; // Simply wants two SDRAM Clock cycles
-        timing.RowCycleDelay = IS42S16400J::ns_to_SDRAM_cycles(63);
-        timing.SelfRefreshTime = IS42S16400J::ns_to_SDRAM_cycles(42);
-        timing.ExitSelfRefreshDelay = IS42S16400J::ns_to_SDRAM_cycles(70);
+        timing.RowCycleDelay = ns_to_SDRAM_cycles(63);
+        timing.SelfRefreshTime = ns_to_SDRAM_cycles(42);
+        timing.ExitSelfRefreshDelay = ns_to_SDRAM_cycles(70);
         timing.LoadToActiveDelay = 2; // Simply wants two SDRAM Clock cycles
 
         HAL_SDRAM_Init(&sdram, &timing);

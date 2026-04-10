@@ -12,6 +12,7 @@ using namespace core::io;
 namespace IS24S16400J {
     // Mode Register Definition
     // // These can only be guaranteed to work with ISSI IS42S16400-series SDRAM
+
     // // Burst Length
     // // // Bit Definitions
     constexpr static uint32_t LOAD_MODE_BURST_LENGTH_MASK = 0x007;
@@ -21,7 +22,7 @@ namespace IS24S16400J {
     constexpr static uint32_t LOAD_MODE_BURST_LENGTH_2 = 0b001 << LOAD_MODE_BURST_LENGTH_POSITION;
     constexpr static uint32_t LOAD_MODE_BURST_LENGTH_4 = 0b010 << LOAD_MODE_BURST_LENGTH_POSITION;
     constexpr static uint32_t LOAD_MODE_BURST_LENGTH_8 = 0b011 << LOAD_MODE_BURST_LENGTH_POSITION;
-    constexpr static uint32_t LOAD_MODE_BURST_LENGTH_PAGE = 0b111 << LOAD_MODE_BURST_LENGTH_POSITION; // Only Works with
+    constexpr static uint32_t LOAD_MODE_BURST_LENGTH_PAGE = 0b111 << LOAD_MODE_BURST_LENGTH_POSITION;
 
     // // Burst Type
     // // // Bit Definitions
@@ -68,10 +69,6 @@ namespace IS24S16400J {
 
             static uint32_t SDRAM_CLK_PERIOD_PS;
             static uint32_t SDRAM_CLK_PER_REFRESH;
-
-            static uint32_t ns_to_SDRAM_cycles(uint32_t ns) {
-                return (ns * 1000) / (SDRAM_CLK_PERIOD_PS + 1);
-            }
 
         private:
             SDRAM_HandleTypeDef sdram;
