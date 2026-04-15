@@ -12,6 +12,7 @@
 #include <core/utils/log.hpp>
 
 #include <dev/IS42S16400J.hpp>
+#include <dev/NHD-7.0-800480EF-ASXN.hpp>
 
 namespace log = core::log;
 namespace io = core::io;
@@ -20,13 +21,20 @@ int main() {
     // Initialize system
     core::platform::init();
 
-    io::UART& uart = io::getUART<io::Pin::UART_TX, io::Pin::UART_RX>(9600, false);
+    UART& uart = io::getUART<Pin::UART_TX, Pin::UART_RX>(9600, false);
 
     log::LOGGER.setUART(&uart);
 
-    SDRAM_HandleTypeDef hsdram{};
-    FMC_SDRAM_TimingTypeDef timing{};
-    auto ram = IS24S16400J::IS42S16400J(hsdram, timing);
+    volatile auto ram = IS24S16400J::IS42S16400J();
+
+    // NHD_ASXN::ScreenSignalPolarity polarity = { .dataEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
+    //                                             .pixelClock = NHD_ASXN::Polarity::ACTIVE_LOW,
+    //                                             .horizontalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
+    //                                             .verticalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW};
+    // NHD_ASXN::ScreenTiming horizontal = {.active_length = 800, .front_porch = 40, .sync = 48, .back_porch = 40};
+    // NHD_ASXN::ScreenTiming vertical = {.active_length = 480, .front_porch = 13, .sync = 1, .back_porch = 31};
+    // volatile auto ltdc = NHD_ASXN::NHD_ASXN(polarity, horizontal, vertical);
+
 
 
 }

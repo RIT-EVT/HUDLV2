@@ -1,8 +1,8 @@
 #pragma once
 
 #include <HALf4/stm32f4xx_hal.h>
-#include <core/io/pin.hpp>
 #include <core/io/platform/f4xx/GPIOf4xx.hpp>
+#include <cstdint>
 
 using namespace core::io;
 
@@ -58,20 +58,26 @@ namespace IS24S16400J {
     // Refresh Count
     constexpr static uint32_t ROW_COUNT = 4096;	    // Rows
     constexpr static uint32_t REFRESH_TIME = 64;	    // ms
-    constexpr static uint32_t REFRESH_TIME_PER_ROW = REFRESH_TIME * 1000 / ROW_COUNT; // us
+    constexpr static uint32_t REFRESH_TIME_PER_ROW	= (REFRESH_TIME << 10) / ROW_COUNT; // us
 
     constexpr static uint32_t RAM_SIZE_BITS = 0x4000000; // 64 Mb
     constexpr static uint32_t RAM_SIZE_BYTES = RAM_SIZE_BITS / 8; // 8 MB
 
     class IS42S16400J {
         public:
-            IS42S16400J(SDRAM_HandleTypeDef& sdram, FMC_SDRAM_TimingTypeDef& timing) : sdram(sdram), timing(timing) {};
 
-            static uint32_t SDRAM_CLK_PERIOD_PS;
-            static uint32_t SDRAM_CLK_PER_REFRESH;
+        IS42S16400J();
+
+        inline static uint32_t SDRAM_CLK_PERIOD_PS = 0;
+        inline static uint32_t SDRAM_CLK_PER_REFRESH = 0;
 
         private:
-            SDRAM_HandleTypeDef sdram;
-            FMC_SDRAM_TimingTypeDef timing;
+        SDRAM_HandleTypeDef sdram;
+        FMC_SDRAM_TimingTypeDef timing;
+
+        static void SetGPIOToFMC();
+        void Setup_Sequence();
+
+        static uint32_t ns_to_SDRAM_cycles(uint32_t ns);
     };
 }
