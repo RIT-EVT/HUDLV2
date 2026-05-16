@@ -11,8 +11,10 @@ using namespace core::io;
  * External SDRAM
  */
 namespace IS24S16400J {
-    class IS42S16400J {
+    class IS42S16400J: public SDRAMDevice {
         public:
+
+        explicit IS42S16400J() = default;
 
         static constexpr const SDRAM::SDRAMInitConfig& getSdramInitConfig() {
             return config;
@@ -24,7 +26,7 @@ namespace IS24S16400J {
             return const_cast<SDRAM::SDRAMPinGroup&>(group);
         }
 
-        static SDRAM::Status startupCommands(SDRAM& device);
+        SDRAM::Status sendStartUpCommands(SDRAM& controller) override;
 
     private:
         static constexpr SDRAM::SDRAMInitConfig config {
@@ -42,9 +44,6 @@ namespace IS24S16400J {
                       Pin::PD_0, Pin::PD_1, Pin::PD_8, Pin::PD_9, Pin::PD_10, Pin::PD_14, Pin::PD_15};
         static constexpr uint8_t number_of_ram_pins = sizeof(ram_pins) / sizeof(ram_pins[0]);
         static constexpr SDRAM::SDRAMPinGroup group = {const_cast<Pin*>(ram_pins), number_of_ram_pins};
-
-        // static void SetGPIOToFMC();
-
 
         // Mode Register Definition
         // // These can only be guaranteed to work with ISSI IS42S16400-series SDRAM, but other ISSI IS42 family ram

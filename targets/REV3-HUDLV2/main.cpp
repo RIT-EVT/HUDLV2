@@ -25,10 +25,10 @@ int main() {
 
     log::LOGGER.setUART(&uart);
 
-    // Not real error vvv
+    IS24S16400J::IS42S16400J device{};
     SDRAM& ram = io::getSDRAM<IS24S16400J::IS42S16400J::getPinGroup()>(IS24S16400J::IS42S16400J::getSdramInitConfig(),
-        IS24S16400J::IS42S16400J::getSdramTimingConfig());
-    SDRAM::Status stats = IS24S16400J::IS42S16400J::startupCommands(ram);
+        IS24S16400J::IS42S16400J::getSdramTimingConfig(), device);
+    // ^^^ Not a real error ^^^
 
     volatile auto ram_Ptr = reinterpret_cast<uint16_t*>(ram.getSdramMemoryAddress());
     uint32_t num = 0;
