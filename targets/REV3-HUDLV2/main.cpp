@@ -25,7 +25,17 @@ int main() {
 
     log::LOGGER.setUART(&uart);
 
-    volatile auto ram = IS24S16400J::IS42S16400J();
+    // Not real error vvv
+    SDRAM& ram = io::getSDRAM<IS24S16400J::IS42S16400J::getPinGroup()>(IS24S16400J::IS42S16400J::getSdramInitConfig(),
+        IS24S16400J::IS42S16400J::getSdramTimingConfig());
+    SDRAM::Status stats = IS24S16400J::IS42S16400J::startupCommands(ram);
+
+    volatile auto ram_Ptr = reinterpret_cast<uint16_t*>(ram.getSdramMemoryAddress());
+    uint32_t num = 0;
+    for (uint32_t i = 0; i < 50; i++) {
+        ram_Ptr[i] = num++;
+        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "ram_ptr: %p, value %d", ram_Ptr, ram_Ptr[i]);
+    }
 
     // NHD_ASXN::ScreenSignalPolarity polarity = { .dataEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
     //                                             .pixelClock = NHD_ASXN::Polarity::ACTIVE_LOW,
