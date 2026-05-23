@@ -32,19 +32,23 @@ int main() {
 
     volatile auto ram_Ptr = reinterpret_cast<uint16_t*>(ram.getSdramMemoryAddress());
     uint32_t num = 0;
-    for (uint32_t i = 0; i < 50; i++) {
-        ram_Ptr[i] = num++;
-        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "ram_ptr: %p, value %d", ram_Ptr, ram_Ptr[i]);
+
+    NHD_ASXN::ScreenSignalPolarity polarity = {.horizontalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
+                                               .verticalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
+                                               .dataEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
+                                               .pixelClock = NHD_ASXN::Polarity::ACTIVE_LOW};
+    NHD_ASXN::ScreenTiming horizontal = {.active_length = 800, .front_porch = 40, .sync = 48, .back_porch = 40};
+    NHD_ASXN::ScreenTiming vertical = {.active_length = 480, .front_porch = 13, .sync = 1, .back_porch = 31};
+    volatile auto ltdc = NHD_ASXN::NHD_ASXN(polarity, horizontal, vertical);
+
+    GPIOf4xx LTDC_En = GPIOf4xx(Pin::PB_13, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
+    LTDC_En.writePin(GPIO::State::HIGH);
+
+    for (uint32_t i = 0; i < 480 * 600 * 3; i++) {
+        ram_Ptr[i] = 0xFF;
+        // log::LOGGER.log(log::Logger::LogLevel::DEBUG, "ram_ptr: %p, value %d", ram_Ptr, ram_Ptr[i]);
     }
 
-    // NHD_ASXN::ScreenSignalPolarity polarity = { .dataEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-    //                                             .pixelClock = NHD_ASXN::Polarity::ACTIVE_LOW,
-    //                                             .horizontalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-    //                                             .verticalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW};
-    // NHD_ASXN::ScreenTiming horizontal = {.active_length = 800, .front_porch = 40, .sync = 48, .back_porch = 40};
-    // NHD_ASXN::ScreenTiming vertical = {.active_length = 480, .front_porch = 13, .sync = 1, .back_porch = 31};
-    // volatile auto ltdc = NHD_ASXN::NHD_ASXN(polarity, horizontal, vertical);
-
-
-
+    GPIOf4xx LTDC_BL = GPIOf4xx(Pin::PA_8, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
+    LTDC_BL.writePin(GPIO::State::HIGH);
 }

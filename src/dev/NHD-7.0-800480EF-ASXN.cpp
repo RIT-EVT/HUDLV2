@@ -1,6 +1,22 @@
+#include <core/io/platform/f4xx/GPIOf4xx.hpp>
 #include <dev/NHD-7.0-800480EF-ASXN.hpp>
 
 namespace NHD_ASXN {
+    void NHD_ASXN::setHardware() {
+        RCC_PeriphCLKInitTypeDef PeriphClkInitStruct{};
+        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
+        PeriphClkInitStruct.PLLSAI.PLLSAIN = 146;
+        PeriphClkInitStruct.PLLSAI.PLLSAIR = 5;
+        PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
+        HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+
+        __HAL_RCC_LTDC_CLK_ENABLE();
+        GPIOf4xx::gpioInit(const_cast<Pin*>(ltdc_pin_af9), ltdc_pin_af9_size, GPIO_MODE_AF_PP, GPIO_NOPULL,
+                           GPIO_SPEED_FREQ_VERY_HIGH, GPIO_AF9_LTDC);
+        GPIOf4xx::gpioInit(const_cast<Pin*>(ltdc_pin_af14), ltdc_pin_af14_size, GPIO_MODE_AF_PP, GPIO_NOPULL,
+                           GPIO_SPEED_FREQ_VERY_HIGH, GPIO_AF14_LTDC);
+    }
+
     // How this works is mildly gross. Boils down to if the POLARITY enum is enabled, then set the value to be
     // the hal's active high value, otherwise set to hal's active low value (0)
     void NHD_ASXN::setPolarity() {
@@ -26,6 +42,7 @@ namespace NHD_ASXN {
              hltdc(), horizontal(horizontal), vertical(vertical), pol(pol) {
         this->hltdc.Instance = LTDC;
 
+        setHardware();
         setPolarity();
         setTimings();
 
@@ -34,6 +51,21 @@ namespace NHD_ASXN {
         this->hltdc.Init.Backcolor.Green = 0x69;
         this->hltdc.Init.Backcolor.Red = 0xF7;
         HAL_LTDC_Init(&this->hltdc);
+
+        LTDC_LayerCfgTypeDef layer{};
+        layer.WindowX0 = 0;
+        layer.WindowY0 = 0;
+        layer.WindowX1 = horizontal.active_length;
+        layer.WindowY1 = vertical.active_length;
+        layer.PixelFormat = LTDC_PIXEL_FORMAT_RGB888;
+        layer.Alpha = 0xFF;
+        layer.Alpha = 0;
+        layer.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+        layer.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+        layer.FBStartAdress = 0xC0000000;
+        layer.ImageWidth = horizontal.active_length;
+        layer.ImageHeight = vertical.active_length;
+        HAL_LTDC_ConfigLayer(&this->hltdc, &layer, 0);
     };
 
 }
