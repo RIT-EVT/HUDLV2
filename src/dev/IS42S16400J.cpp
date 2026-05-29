@@ -23,17 +23,17 @@ namespace IS24S16400J {
     }
 
     const SDRAM::SDRAMTimingConfig& IS42S16400J::getSdramTimingConfig() {
-        static SDRAM::SDRAMTimingConfig config{};
+        static SDRAM::SDRAMTimingConfig timingConfig{};
 
-        config.loadToActiveDelay    = SDRAM::NSToSdramClockCycles(15);
-        config.exitSelfRefreshDelay = SDRAM::NSToSdramClockCycles(15);
-        config.selfRefreshTime      = 2; // Simply wants two SDRAM Clock cycles
-        config.rowCycleDelay        = SDRAM::NSToSdramClockCycles(63);
-        config.writeRecoveryTime    = SDRAM::NSToSdramClockCycles(42);
-        config.rpDelay              = SDRAM::NSToSdramClockCycles(70);
-        config.rcdDelay             = 2; // Simply wants two SDRAM Clock cycles
+        timingConfig.loadToActiveDelay    = SDRAM::NSToSdramClockCycles(15, 2);
+        timingConfig.exitSelfRefreshDelay = SDRAM::NSToSdramClockCycles(15, 2);
+        timingConfig.selfRefreshTime      = 2; // Simply wants two SDRAM Clock cycles
+        timingConfig.rowCycleDelay        = SDRAM::NSToSdramClockCycles(63, 2);
+        timingConfig.writeRecoveryTime    = SDRAM::NSToSdramClockCycles(42, 2);
+        timingConfig.readToPrechargeDelay = SDRAM::NSToSdramClockCycles(70, 2);
+        timingConfig.rcdDelay             = 2; // Simply wants two SDRAM Clock cycles
 
-        return config;
+        return timingConfig;
     };
 
 }
