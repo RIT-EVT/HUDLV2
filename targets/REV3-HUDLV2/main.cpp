@@ -4,6 +4,7 @@
  * enters.
  */
 
+
 #include <HUDLV2.hpp>
 #include <core/io/UART.hpp>
 #include <core/io/pin.hpp>
@@ -13,6 +14,8 @@
 
 #include <dev/IS42S16400J.hpp>
 #include <dev/NHD-7.0-800480EF-ASXN.hpp>
+
+#include <Box.hpp>
 
 namespace log = core::log;
 namespace io = core::io;
@@ -51,4 +54,6 @@ int main() {
 
     GPIOf4xx LTDC_BL = GPIOf4xx(Pin::PA_8, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
     LTDC_BL.writePin(GPIO::State::HIGH);
+
+    ScreenLibrary::Square::gross();
 }

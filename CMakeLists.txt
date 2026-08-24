@@ -48,6 +48,16 @@ include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 
 ###############################################################################
+# Run Screen-Library CMake files
+###############################################################################
+set(SCREEN_LIBRARY_DIR      ${CMAKE_SOURCE_DIR}/libs/Screen-Library)
+
+# Link to the EVT-core library
+add_subdirectory(libs/Screen-Library/)
+
+include(CMakeDependentOption)
+
+###############################################################################
 # Project Setup
 ###############################################################################
 set(BOARD_LIB_NAME HUDLV2)
@@ -65,13 +75,14 @@ project(${BOARD_LIB_NAME}
 
 add_library(${PROJECT_NAME} STATIC
         include/dev/IS42S16400J.hpp
-        src/dev/IS42S16400J.cpp
-        src/dev/NHD-7.0-800480EF-ASXN.cpp
-        include/dev/NHD-7.0-800480EF-ASXN.hpp)
+        include/dev/NHD-7.0-800480EF-ASXN.hpp
+        )
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
         src/HUDLV2.cpp
+        src/dev/IS42S16400J.cpp
+        src/dev/NHD-7.0-800480EF-ASXN.cpp
         )
 
 ###############################################################################
@@ -79,6 +90,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 ###############################################################################
 target_link_libraries(${PROJECT_NAME}
         PUBLIC EVT
+        PUBLIC SCREENLIBRARY
         )
 
 ###############################################################################
