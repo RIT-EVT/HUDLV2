@@ -5,7 +5,6 @@
  */
 
 
-#include <HUDLV2.hpp>
 #include <core/io/UART.hpp>
 #include <core/io/pin.hpp>
 #include <core/manager.hpp>
@@ -14,8 +13,6 @@
 
 #include <dev/IS42S16400J.hpp>
 #include <dev/NHD-7.0-800480EF-ASXN.hpp>
-
-#include <Box.hpp>
 
 namespace log = core::log;
 namespace io = core::io;
@@ -36,13 +33,6 @@ int main() {
     volatile auto ram_Ptr = reinterpret_cast<uint16_t*>(ram.getSdramMemoryAddress());
     uint32_t num = 0;
 
-    NHD_ASXN::ScreenSignalPolarity polarity = {.horizontalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-                                               .verticalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-                                               .dataEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-                                               .pixelClock = NHD_ASXN::Polarity::ACTIVE_LOW};
-    NHD_ASXN::ScreenTiming horizontal = {.active_length = 800, .front_porch = 40, .sync = 48, .back_porch = 40};
-    NHD_ASXN::ScreenTiming vertical = {.active_length = 480, .front_porch = 13, .sync = 1, .back_porch = 31};
-    volatile auto ltdc = NHD_ASXN::NHD_ASXN(polarity, horizontal, vertical);
 
     GPIOf4xx LTDC_En = GPIOf4xx(Pin::PB_13, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
     LTDC_En.writePin(GPIO::State::HIGH);
@@ -55,5 +45,5 @@ int main() {
     GPIOf4xx LTDC_BL = GPIOf4xx(Pin::PA_8, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
     LTDC_BL.writePin(GPIO::State::HIGH);
 
-    ScreenLibrary::Square::gross();
+    // ScreenLibrary::Square::gross();
 }
