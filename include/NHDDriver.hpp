@@ -4,25 +4,29 @@
 
 #ifndef HUDLV2_NHDDRIVER_HPP
 #define HUDLV2_NHDDRIVER_HPP
-#include <core/io/SDRAM.hpp>
+
+#include "dev/NHD-7.0-800480EF-ASXN.hpp"
 
 #include <DisplayDriver.hpp>
-#include <dev/NHD-7.0-800480EF-ASXN.hpp>
+#include <core/io/SDRAM.hpp>
 
-class NHDDriver: ScreenLibrary::Driver::BufferedDisplayDriver {
+class NHDDriver : ScreenLibrary::Driver::BufferedDisplayDriver<ScreenLibrary::RGB_24> {
 public:
-    NHDDriver(SDRAM& ram);
+    explicit NHDDriver(core::io::SDRAM& ram);
 
-    uint16_t getWidth();
-    uint16_t getHeight();
+    uint16_t getWidth() override;
+    uint16_t getHeight() override;
 
-    void setPixel(ScreenLibrary::RGBA color, uint16_t x, uint16_t y);
-    void fillRect(ScreenLibrary::RGBA color, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
+    void setPixel(ScreenLibrary::RGB_24 color, uint16_t x, uint16_t y) override;
+    void fillRect(ScreenLibrary::RGB_24 color, uint16_t x, uint16_t y, uint16_t width, uint16_t height) override;
 
-    void clear(uint16_t x, uint16_t y);
-    void clearRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
+    void clear(uint16_t x, uint16_t y) override;
+    void clearRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height) override;
+
+    void flush() override;
 private:
-    SDRAM& ram;
+    core::io::SDRAM& ram;
+    ScreenLibrary::RGB_24* ramPtr;
 
     uint16_t displayWidth = 800;
     uint16_t displayHeight = 480;

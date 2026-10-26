@@ -1,9 +1,6 @@
 #pragma once
 
-#include <HALf4/stm32f4xx_hal.h>
 #include <core/io/SDRAM.hpp>
-#include <core/io/platform/f4xx/GPIOf4xx.hpp>
-#include <cstdint>
 
 using namespace core::io;
 

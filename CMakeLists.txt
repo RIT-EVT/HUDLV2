@@ -76,13 +76,14 @@ project(${BOARD_LIB_NAME}
 add_library(${PROJECT_NAME} STATIC
         include/dev/IS42S16400J.hpp
         include/dev/NHD-7.0-800480EF-ASXN.hpp
+        include/NHDDriver.hpp
         )
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/HUDLV2.cpp
         src/dev/IS42S16400J.cpp
         src/dev/NHD-7.0-800480EF-ASXN.cpp
+        src/NHDDriver.cpp
         )
 
 ###############################################################################
