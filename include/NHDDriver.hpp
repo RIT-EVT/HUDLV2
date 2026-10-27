@@ -30,7 +30,7 @@ public:
     void disableBacklight() override;
 private:
     core::io::SDRAM& ram;
-    ScreenLibrary::RGB_24* ramPtr;
+    ScreenLibrary::BGR_24* ramPtr;
     // uint16_t* ramPtr;
 
     uint16_t displayWidth = 800;

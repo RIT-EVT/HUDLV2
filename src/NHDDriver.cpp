@@ -16,14 +16,8 @@
      _a > _b ? _a : _b; })
 
 NHDDriver::NHDDriver(core::io::SDRAM& ram, core::io::GPIO& backlightPin, core::io::GPIO& ltdcEnable) : ram(ram), ltdc(polarity, horizontal, vertical), ltdcEnable(ltdcEnable), backlightPin(backlightPin) {
-    ramPtr = reinterpret_cast<ScreenLibrary::RGB_24*>(ram.getSdramMemoryAddress());
-    // ramPtr = reinterpret_cast<uint16_t* >(ram.getSdramMemoryAddress());
-
+    ramPtr = reinterpret_cast<ScreenLibrary::BGR_24*>(ram.getSdramMemoryAddress());
     ltdcEnable.writePin(GPIO::State::HIGH);
-    // for (uint32_t i = 0; i < 480 * 800 * 3; i++) {
-    //     ramPtr[i] = i;
-    //     // core::log::LOGGER.log(core::log::Logger::LogLevel::DEBUG, "ramPtr: %p, value %d", ramPtr + i, ramPtr[i]);
-    // }
 }
 
 uint16_t NHDDriver::getHeight() {
