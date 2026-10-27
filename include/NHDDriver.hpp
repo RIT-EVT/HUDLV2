@@ -11,7 +11,7 @@
 #include <DisplayDriver.hpp>
 #include <core/io/SDRAM.hpp>
 
-class NHDDriver : ScreenLibrary::Driver::BufferedDisplayDriver<ScreenLibrary::BGR_24>, ScreenLibrary::Driver::BacklightDriver {
+class NHDDriver : public ScreenLibrary::Driver::BufferedDisplayDriver<ScreenLibrary::BGR_24>, public ScreenLibrary::Driver::BacklightDriver {
 public:
     explicit NHDDriver(core::io::SDRAM& ram, core::io::GPIO& backlightPin, core::io::GPIO& ltdcEnable);
 
