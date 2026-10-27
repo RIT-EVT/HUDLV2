@@ -11,8 +11,9 @@
 
 #include <core/utils/log.hpp>
 
-#include <dev/IS42S16400J.hpp>
 #include "NHDDriver.hpp"
+#include "TestPatterns.hpp"
+#include <dev/IS42S16400J.hpp>
 
 namespace log = core::log;
 namespace io = core::io;
@@ -26,27 +27,20 @@ int main() {
     log::LOGGER.setUART(&uart);
 
     IS24S16400J::IS42S16400J device{};
-    // SDRAM& ram = io::getSDRAM<IS24S16400J::IS42S16400J::getPinGroup()>(IS24S16400J::IS42S16400J::getSdramInitConfig(),
-        // IS24S16400J::IS42S16400J::getSdramTimingConfig(), device);
     SDRAM& ram = io::getSDRAM<IS24S16400J::IS42S16400J::getPinGroup()>(IS24S16400J::IS42S16400J::getSdramInitConfig(), IS24S16400J::IS42S16400J::getSdramTimingConfig(), device);
 
     // TODO: Arena.c, frame.c, and heap.c
     GPIOf4xx backlightPin = GPIOf4xx(Pin::PA_8, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
     GPIOf4xx ltdcEnable = GPIOf4xx(Pin::PB_13, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
 
-    log::LOGGER.log(log::Logger::LogLevel::INFO, "Starting");
     NHDDriver driver = NHDDriver(ram, backlightPin, ltdcEnable);
-    log::LOGGER.log(log::Logger::LogLevel::INFO, "Inited driver");
 
     driver.enableBacklight();
-    log::LOGGER.log(log::Logger::LogLevel::INFO, "Enabled backlioght");
 
-    constexpr ScreenLibrary::BGR_24 red = { .blue = 0, .green = 0, .red = 255 };
-    driver.fillRect(red, 50, 50, 100, 100);
-    driver.fillRect(red, 200, 50, 100, 100);
-    driver.fillRect(red, 100, 50, 100, 100);
-
-    log::LOGGER.log(log::Logger::LogLevel::INFO, "Drew Red");
+    // Setup test patterns to be drawn onto the screen.
+    // Color white, Color yellow, Color cyan, Color magenta, Color green, Color red, Color blue
+    ScreenLibrary::TestPatterns::SMPTE_ECR<ScreenLibrary::BGR_24> testPattern = ScreenLibrary::TestPatterns::SMPTE_ECR(white, yellow, cyan, green, magenta, red, blue);
+    testPattern.draw(&driver);
 
     while (true) {
     }
