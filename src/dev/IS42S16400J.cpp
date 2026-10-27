@@ -21,6 +21,7 @@ namespace IS24S16400J {
         }
         return SDRAM::Status::OK;
     }
+
     const SDRAM::SDRAMTimingConfig& IS42S16400J::getSdramTimingConfig() {
         static SDRAM::SDRAMTimingConfig timingConfig{};
 

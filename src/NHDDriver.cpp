@@ -1,5 +1,7 @@
 #include <NHDDriver.hpp>
 
+#include "core/utils/log.hpp"
+
 #include <cmath>
 #include <core/io/SDRAM.hpp>
 #include <dev/NHD-7.0-800480EF-ASXN.hpp>
@@ -13,8 +15,15 @@
        __typeof__ (b) _b = (b); \
      _a > _b ? _a : _b; })
 
-NHDDriver::NHDDriver(SDRAM& ram) : ram(ram), ltdc(polarity, horizontal, vertical) {
+NHDDriver::NHDDriver(core::io::SDRAM& ram, core::io::GPIO& backlightPin, core::io::GPIO& ltdcEnable) : ram(ram), ltdc(polarity, horizontal, vertical), ltdcEnable(ltdcEnable), backlightPin(backlightPin) {
     ramPtr = reinterpret_cast<ScreenLibrary::RGB_24*>(ram.getSdramMemoryAddress());
+    // ramPtr = reinterpret_cast<uint16_t* >(ram.getSdramMemoryAddress());
+
+    ltdcEnable.writePin(GPIO::State::HIGH);
+    // for (uint32_t i = 0; i < 480 * 800 * 3; i++) {
+    //     ramPtr[i] = i;
+    //     // core::log::LOGGER.log(core::log::Logger::LogLevel::DEBUG, "ramPtr: %p, value %d", ramPtr + i, ramPtr[i]);
+    // }
 }
 
 uint16_t NHDDriver::getHeight() {
@@ -25,14 +34,14 @@ uint16_t NHDDriver::getWidth() {
     return displayWidth;
 }
 
-void NHDDriver::setPixel(const ScreenLibrary::RGB_24 color, const uint16_t x, const uint16_t y) {
+void NHDDriver::setPixel(const ScreenLibrary::BGR_24 color, const uint16_t x, const uint16_t y) {
     const int start = y * displayWidth + x;
     ramPtr[start] = color;
 }
 
-void NHDDriver::fillRect(const ScreenLibrary::RGB_24 color, const uint16_t x, const uint16_t y, const uint16_t width, const uint16_t height) {
-    const int maxX = max((x + width), displayWidth);
-    const int maxY = max((y + height), displayHeight);
+void NHDDriver::fillRect(const ScreenLibrary::BGR_24 color, const uint16_t x, const uint16_t y, const uint16_t width, const uint16_t height) {
+    const int maxX = min((x + width), displayWidth);
+    const int maxY = min((y + height), displayHeight);
 
     for (uint32_t i = x; i < maxX; i ++) {
         for (uint32_t j = y; j < maxY; j++) {
@@ -54,9 +63,9 @@ void NHDDriver::flush() {
 }
 
 void NHDDriver::enableBacklight() {
-    // GPIOf4xx LTDC_BL = GPIOf4xx(Pin::PA_8, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
-    // LTDC_BL.writePin(GPIO::State::HIGH);
-    //
-    // ScreenLibrary::Square::gross();
+    backlightPin.writePin(GPIO::State::HIGH);
+}
 
+void NHDDriver::disableBacklight() {
+    backlightPin.writePin(GPIO::State::LOW);
 }

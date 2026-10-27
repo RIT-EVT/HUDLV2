@@ -47,9 +47,9 @@ namespace NHD_ASXN {
         setTimings();
 
         // EVT Colors
-        this->hltdc.Init.Backcolor.Blue = 0x02;
-        this->hltdc.Init.Backcolor.Green = 0x69;
-        this->hltdc.Init.Backcolor.Red = 0xF7;
+        // this->hltdc.Init.Backcolor.Blue = 0x02;
+        // this->hltdc.Init.Backcolor.Green = 0x69;
+        // this->hltdc.Init.Backcolor.Red = 0xF7;
         HAL_LTDC_Init(&this->hltdc);
 
         LTDC_LayerCfgTypeDef layer{};
@@ -59,7 +59,7 @@ namespace NHD_ASXN {
         layer.WindowY1 = vertical.active_length;
         layer.PixelFormat = LTDC_PIXEL_FORMAT_RGB888;
         layer.Alpha = 0xFF;
-        layer.Alpha = 0;
+        layer.Alpha0 = 0;
         layer.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
         layer.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
         layer.FBStartAdress = 0xC0000000;
