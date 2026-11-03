@@ -1,5 +1,5 @@
 ###############################################################################
-# Top level CMakeList for building the *EVT_BOARD_NAME* source code
+# Top level CMakeList for building the HUDLV2 source code
 ###############################################################################
 cmake_minimum_required(VERSION 3.15)
 
@@ -50,7 +50,7 @@ include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
 ###############################################################################
 # Run Screen-Library CMake files
 ###############################################################################
-set(SCREEN_LIBRARY_DIR      ${CMAKE_SOURCE_DIR}/libs/Screen-Library)
+set(SCREEN_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/libs/Screen-Library)
 
 # Link to the EVT-core library
 add_subdirectory(libs/Screen-Library/)

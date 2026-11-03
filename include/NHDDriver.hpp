@@ -7,9 +7,10 @@
 
 #include "core/io/GPIO.hpp"
 #include "dev/NHD-7.0-800480EF-ASXN.hpp"
+#include "screen/Color.hpp"
 
-#include <DisplayDriver.hpp>
 #include <core/io/SDRAM.hpp>
+#include <screen/DisplayDriver.hpp>
 
 class NHDDriver : public ScreenLibrary::Driver::BufferedDisplayDriver<ScreenLibrary::BGR_24>, public ScreenLibrary::Driver::BacklightDriver {
 public:

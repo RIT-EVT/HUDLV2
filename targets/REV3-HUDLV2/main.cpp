@@ -12,7 +12,10 @@
 #include <core/utils/log.hpp>
 
 #include "NHDDriver.hpp"
-#include "TestPatterns.hpp"
+#include <screen/Color.hpp>
+#include <screen/DisplayDriver.hpp>
+#include <screen/test/TestPatterns.hpp>
+
 #include <dev/IS42S16400J.hpp>
 
 namespace log = core::log;
@@ -38,8 +41,16 @@ int main() {
     driver.enableBacklight();
 
     // Setup test patterns to be drawn onto the screen.
-    // Color white, Color yellow, Color cyan, Color magenta, Color green, Color red, Color blue
-    ScreenLibrary::TestPatterns::SMPTE_ECR<ScreenLibrary::BGR_24> testPattern = ScreenLibrary::TestPatterns::SMPTE_ECR(white, yellow, cyan, green, magenta, red, blue);
+    constexpr ScreenLibrary::BGR_24 black  = { .blue = 0,    .green = 0,   .red = 0   };
+    constexpr ScreenLibrary::BGR_24 white   = { .blue = 255, .green = 255, .red = 255 };
+    constexpr ScreenLibrary::BGR_24 yellow  = { .blue = 0,   .green = 255, .red = 255 };
+    constexpr ScreenLibrary::BGR_24 cyan    = { .blue = 255, .green = 255, .red = 0   };
+    constexpr ScreenLibrary::BGR_24 green   = { .blue = 0,   .green = 255, .red = 0   };
+    constexpr ScreenLibrary::BGR_24 magenta = { .blue = 255, .green = 0,   .red = 255 };
+    constexpr ScreenLibrary::BGR_24 red     = { .blue = 0,   .green = 0,   .red = 255 };
+    constexpr ScreenLibrary::BGR_24 blue    = { .blue = 255, .green = 0,   .red = 0   };
+
+    auto testPattern = ScreenLibrary::TestPatterns::SMPTE_ECR<ScreenLibrary::BGR_24>(black, white, yellow, cyan, green, magenta, red, blue);
     testPattern.draw(&driver);
 
     while (true) {
