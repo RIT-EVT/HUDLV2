@@ -12,6 +12,8 @@
 #include <core/utils/log.hpp>
 
 #include "NHDDriver.hpp"
+#include "screen/shapes/Rectangle.hpp"
+
 #include <screen/Color.hpp>
 #include <screen/DisplayDriver.hpp>
 #include <screen/test/TestPatterns.hpp>
@@ -20,6 +22,7 @@
 
 namespace log = core::log;
 namespace io = core::io;
+namespace screen = ScreenLibrary;
 
 int main() {
     // Initialize system
@@ -39,53 +42,33 @@ int main() {
     NHDDriver driver = NHDDriver(ram, backlightPin, ltdcEnable);
 
     driver.enableBacklight();
+    driver.clear();
 
     // Setup test patterns to be drawn onto the screen.
-    constexpr ScreenLibrary::BGR_24 black  = { .blue = 0,    .green = 0,   .red = 0   };
-    constexpr ScreenLibrary::BGR_24 white   = { .blue = 255, .green = 255, .red = 255 };
-    constexpr ScreenLibrary::BGR_24 yellow  = { .blue = 0,   .green = 255, .red = 255 };
-    constexpr ScreenLibrary::BGR_24 cyan    = { .blue = 255, .green = 255, .red = 0   };
-    constexpr ScreenLibrary::BGR_24 green   = { .blue = 0,   .green = 255, .red = 0   };
-    constexpr ScreenLibrary::BGR_24 magenta = { .blue = 255, .green = 0,   .red = 255 };
-    constexpr ScreenLibrary::BGR_24 red     = { .blue = 0,   .green = 0,   .red = 255 };
-    constexpr ScreenLibrary::BGR_24 blue    = { .blue = 255, .green = 0,   .red = 0   };
+    constexpr screen::BGR_24 black  = { .blue = 0,    .green = 0,   .red = 0   };
+    constexpr screen::BGR_24 white   = { .blue = 255, .green = 255, .red = 255 };
+    constexpr screen::BGR_24 yellow  = { .blue = 0,   .green = 255, .red = 255 };
+    constexpr screen::BGR_24 cyan    = { .blue = 255, .green = 255, .red = 0   };
+    constexpr screen::BGR_24 green   = { .blue = 0,   .green = 255, .red = 0   };
+    constexpr screen::BGR_24 magenta = { .blue = 255, .green = 0,   .red = 255 };
+    constexpr screen::BGR_24 red     = { .blue = 0,   .green = 0,   .red = 255 };
+    constexpr screen::BGR_24 blue    = { .blue = 255, .green = 0,   .red = 0   };
 
-    auto testPattern = ScreenLibrary::TestPatterns::SMPTE_ECR<ScreenLibrary::BGR_24>(black, white, yellow, cyan, green, magenta, red, blue);
-    testPattern.draw(&driver);
+    // screen::Rectangle<screen::BGR_24> testRectangle = screen::Rectangle<screen::BGR_24>(0, 0, 100, 100, black, white);
+
+    // testRectangle.draw(driver);
+
+    driver.clear();
 
     while (true) {
+
     }
-    // Initialize system
-    // core::platform::init();
-    //
-    // UART& uart = io::getUART<Pin::UART_TX, Pin::UART_RX>(9600, false);
-    //
-    // log::LOGGER.setUART(&uart);
-    //
-    // IS24S16400J::IS42S16400J device{};
-    // const SDRAM& ram = io::getSDRAM<IS24S16400J::IS42S16400J::getPinGroup()>(IS24S16400J::IS42S16400J::getSdramInitConfig(),
-    //     IS24S16400J::IS42S16400J::getSdramTimingConfig(), device);
-    // // ^^^ Not a real error ^^^
-    //
-    // volatile auto ram_Ptr = reinterpret_cast<uint16_t*>(ram.getSdramMemoryAddress());
-    // uint32_t num = 0;
-    //
-    // NHD_ASXN::ScreenSignalPolarity polarity = {.horizontalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-    //                                            .verticalSyncEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-    //                                            .dataEnable = NHD_ASXN::Polarity::ACTIVE_LOW,
-    //                                            .pixelClock = NHD_ASXN::Polarity::ACTIVE_LOW};
-    // NHD_ASXN::ScreenTiming horizontal = {.active_length = 800, .front_porch = 40, .sync = 48, .back_porch = 40};
-    // NHD_ASXN::ScreenTiming vertical = {.active_length = 480, .front_porch = 13, .sync = 1, .back_porch = 31};
-    // volatile auto ltdc = NHD_ASXN::NHD_ASXN(polarity, horizontal, vertical);
-    //
-    // GPIOf4xx LTDC_En = GPIOf4xx(Pin::PB_13, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
-    // LTDC_En.writePin(GPIO::State::HIGH);
-    //
-    // for (uint32_t i = 0; i < 480 * 800 * 3; i++) {
-    //     // ram_Ptr[i] = 0xFF;
-    //     // log::LOGGER.log(log::Logger::LogLevel::DEBUG, "ram_ptr: %p, value %d", ram_Ptr + i, ram_Ptr[i]);
-    // }
-    //
-    // GPIOf4xx LTDC_BL = GPIOf4xx(Pin::PA_8, GPIO::Direction::OUTPUT, GPIO::Pull::NO_PULL);
-    // LTDC_BL.writePin(GPIO::State::HIGH);
 }
+
+/**
+ * - Screen space coordinates (-1 to 1), (-1 to 1) with relative scaling
+ * - Scenes that can contain scenes which contain primitives
+ * - Scenes can be set to a z level that is supported by the device
+ *      - Compile time definition
+ * -
+ */

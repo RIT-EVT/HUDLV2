@@ -45,7 +45,16 @@ void NHDDriver::fillRect(const ScreenLibrary::BGR_24 color, const uint16_t x, co
 }
 
 void NHDDriver::clear(uint16_t x, uint16_t y) {
+    const int start = y * displayWidth + x;
+    ramPtr[start] = {0 , 0 , 0};
+}
 
+void NHDDriver::clear() {
+    for (uint32_t i = 0; i < displayWidth; i ++) {
+        for (uint32_t j = 0; j < displayHeight; j++) {
+            clear(i, j);
+        }
+    }
 }
 
 void NHDDriver::clearRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height) {
